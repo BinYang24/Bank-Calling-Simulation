@@ -1,0 +1,119 @@
+1.用户界面设计：
+文件方式：
+每隔3秒（间隔可以在文件中设置）在命令行窗口输出
+前三行打印出当前排队的普通客户数、VIP客户数，是否等待下班。
+以下各行打印 各营业窗口的状态、正在服务的客户号码。
+示例：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+动画方式：
+在窗口中右下角绘制各营业窗口的叫号显示牌和取号机的两个按钮，控制窗口的暂停、下班，需要设置相应的按钮。
+左上角开辟一块显示区，显示当前最大的客户号码、排队人数、下班时间或等待下班的提示。VIP客户的身份号输入，要在取号机旁边开辟输入区，可以文本框输入。
+2.有限状态自动机状态转换图
+3.高层数据结构定义
+全局常量定义：
+MaxOrdCou(最大普通窗口数目)=6
+MaxVipCou(最大VIP窗口数目)=2
+MaxOrdCus(最大普通用户排队数目)=1000 
+MaxVipCus(最大VIP用户排队数目)=100
+InitOrdCou(初始普通窗口数目)=1
+InitVipCou(初始VIP窗口数目)=3
+
+全局数据结构定义
+CurOrdCus(当前普通用户排队数目)
+CurVipCus(当前VIP用户排队数目)
+Enum{WORK,OFF}
+Enum{ORD,VIP}
+
+Int BankState;（银行状态）
+Int CurTime;（当前时间）
+
+Struct Cou
+{
+Int ID;
+Int TypeCou;（窗口类型）
+Int state;（窗口状态）
+Int EndTime;（服务结束时间）
+Int SumCus,SumTime(窗口服务客户总数，服务总时长);
+}OrdCou[MaxOrdCou],VipCou[MaxVipCou]; 
+Struct Cus
+{
+Int TypeCus;（客户类型）
+Int TypeBus;（申请服务的类型）
+Int VIPID;
+};
+Struct Seq
+{
+Cus queue[1000];(客户等待队列)
+Int front,rear;（队头，队尾）
+}SeqOrdCus (普通客户队列),SeqVipCus (VIP客户队列);
+在配置文件中定义：
+MaxSeqLen（单队列最大允许等待长度）
+Maxbus（最大的业务种类数）
+MinSec【MaxBus】（单业务办理最短时长）,MaxSec【MaxBus】（单业务办理最长时长）
+MinRestSec（窗口休息最短时长）,MaxRestSec（窗口休息最长时长）	VIPSERVLen
+当在设置时长 VIPSERVLen内VIP客户数一直小于3人，则动态关闭增加的VIP窗口，恢复原来窗口数。
+
+
+
+
+
+
+
+
+
+4.系统模块划分
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+附加说明：
+Init.c:
+读入默认缺省配置文件，根据客户输入初始化配置文件。
+调用VIPControl.c修改VIP用户信息。
+VIPControl.c：
+修改VIP用户信息。
+检测指定号码是否为VIP用户。
+Input.c:
+读入客户到来信息，调用SequenceControl.c修改队列。
+调用VIPControl.c修改VIP用户信息。
+读入窗口申请休息指令，调用counterControl.c修改窗口信息。
+SequenceControl.c：
+管理排队队列，插入新客户，输出队头客户。
+counterControl.c：
+管理窗口信息，每秒调用处理个各窗口工作状态。
+
