@@ -1,0 +1,7 @@
+[MaxSeqLen] 50
+[SumBus] 50
+[MinSec] 5
+[MaxSec] 15
+[MinRestSec] 20
+[MaxRestSec] 100
+[VIPSERVLen] 1
